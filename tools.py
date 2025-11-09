@@ -8,13 +8,13 @@ def get_weather(lat: float, lon: float, unit: str = "metric"):
         "latitude" : lat,
         "longitude" : lon,
         "current_weather" : True,
-        "temperature_unit" : "celsius" if unit == metric else "fahrenheit"
+        "temperature_unit": "celsius" if unit == "metric" else "fahrenheit"
     } # the params we'll send with the request
     res = requests.get(url, params=params).json() # actually making the request
     current = res.get("current_weather", {}) # taking out the current_weather section from the API output, the {} helps us return an empty object safely without running afowl
     return {
-        "temperature" : current.get("temperature")
-        "windspeed" : current.get("windspeed")
+        "temperature" : current.get("temperature"),
+        "windspeed" : current.get("windspeed"),
         "time" : current.get("time")
     }
 
@@ -23,7 +23,7 @@ def get_news(query: str = "", country: str = "us"):
     key = os.getenv("NEWS_API_KEY") # grabbing the API key from the .env file
     endpoint = "https://newsapi.org/v2/top-headlines" # the API endpoint we'll be hitting
     params = {"country" : country, "q" : query or None, "apiKey" : key}
-    res = requests.get(enpoint, params=params).json() # actually making the api request
+    res = requests.get(endpoint, params=params).json() # actually making the api request
     articles = res.get("articles", [])[:5] # grabbing the first five articles from the "articles" section of the response
     return [
         {"title" : a["title"], 
@@ -37,7 +37,13 @@ def get_news(query: str = "", country: str = "us"):
 def get_calendar_events():
     now = datetime.now()
     events = [
-        {"title": "Team Meeting" : "time": (now + timedelta(hours=2)),isoformat()}, # fake calendar entry 1 that'll help us verify the AI can infer to hit this function when needed
-        {"title": "Dinner with Mom", "time": (now + timedelta(hours=6)).isoformat()} # fake calendar entry 2 that'll help us verify the AI can infer to hit this function when needed
+        {
+            "title": "Team Meeting",
+            "time": (now + timedelta(hours=2)).isoformat()
+        },
+        {
+            "title": "Dinner with Mom",
+            "time": (now + timedelta(hours=6)).isoformat()
+        }
     ]
     return events
